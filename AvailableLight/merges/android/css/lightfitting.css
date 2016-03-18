@@ -1,0 +1,27 @@
+﻿	/* for android     */
+
+body {
+}
+
+	body > main {
+		top: 5em; /* height of header plus height of footer */
+		bottom: 0;
+	}
+
+	body > header {
+		top: 0;
+		height: 2em;
+	}
+
+	body > nav {
+		top: 2em; /* height of header */
+		bottom: unset;
+	}
+
+button, input[type="button"] {
+	border-radius: 5px;
+}
+
+input, select {
+	border-radius: 5px;
+}

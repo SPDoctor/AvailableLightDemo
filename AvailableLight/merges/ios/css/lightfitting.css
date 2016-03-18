@@ -1,0 +1,23 @@
+﻿/* for iOS */
+
+body {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body>header {
+  /* background: -webkit-linear-gradient(lightgray, gray); For Safari 5.1 to 6.0 */
+  /* background: linear-gradient(lightgray, gray); Standard syntax (must be last) */
+}
+
+body > nav {
+	/* background: -webkit-linear-gradient(lightgray, gray); For Safari 5.1 to 6.0 */
+	/* background: linear-gradient(lightgray, gray); Standard syntax (must be last) */
+}
+
+button, input[type="button"] {
+	border-radius: 5px;
+}
+
+input, select {
+	border-radius: 5px;
+}

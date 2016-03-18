@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Available Light</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <link href="css/availablelight.css" rel="stylesheet" />
+  <link href="css/lightfitting.css" rel="stylesheet" />
+  <link href="css/app.css" rel="stylesheet" />
+  <script src="cordova.js"></script>
+  <script src="scripts/platformOverrides.js"></script>
+  <script src="scripts/lib/availablelight.js"></script>
+  <script src="scripts/model.js"></script>
+  <script src="scripts/viewmodel.js"></script>
+  <script src="scripts/viewrender.js"></script>
+  <script src="scripts/index.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Loading...</h1>
+  </header>
+
+  <nav>
+    <button type="button" onclick="availablelight.navigateBack();"><span class="navbar-icon">&#xE0D5;</span><span class="navbar-label">Back</span></button>
+    <button type="button" onclick="availablelight.navigate('home');"><span class="navbar-icon">&#xE10F;</span><span class="navbar-label">Home</span></button>
+    <button type="button" onclick="availablelight.navigate('settings');"><span class="navbar-icon">&#xE15E;</span><span class="navbar-label">Settings</span></button>
+    <button type="button" onclick="availablelight.navigate('help');"><span class="navbar-icon">&#xE11B;</span><span class="navbar-label">Help</span></button>
+  </nav>
+
+  <main>
+    <article id="home">
+      <section>
+        <div id="levels-list"></div>
+      </section>
+      <section>
+        <div id="exposure-heading"></div>
+        <table className="exposure-table">
+          <thead className="theme-accent-colour">
+            <tr>
+              <td>aperture</td>
+              <td>shutter speed</td>
+              <td>note</td>
+            </tr>
+          </thead>
+          <tbody id="exposure-table" className="theme-background-colour theme-foreground-colour">
+          </tbody>
+        </table>
+      </section>
+    </article>
+
+    <article id="settings">
+      <section>
+        <h1>Settings</h1>
+        <div id="settings-control">
+          <div className="settings-row">
+            <div className="settings-caption">
+              <label>Speed (ISO):</label>
+            </div>
+            <div className="settings-value">
+              <SELECT id="select-speed"></SELECT>
+            </div>
+          </div>
+
+          <div className="settings-row">
+            <div className="settings-caption">
+              <label>Focal Length (mm):</label>
+            </div>
+            <div className="settings-value">
+              <INPUT id="input-focal-length" type="number" min="1" />
+            </div>
+          </div>
+
+          <div className="settings-row">
+            <div className="settings-caption">
+              <label>Sensor Size:</label>
+            </div>
+            <div className="settings-value">
+              <SELECT id="select-sensor-size"></SELECT>
+            </div>
+          </div>
+
+          <div className="settings-row">
+            <div className="settings-caption">
+              <label>Image Stabilization:</label>
+            </div>
+            <div className="settings-value">
+              <INPUT id="checkbox-image-stabilized" type="checkbox" />
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </article>
+
+    <article id="help">
+      <section>
+        <h1 id="app-name"></h1>
+        <img src="images/Icon.png" class="app-icon" />
+        <h2 id="app-version">Version 1.0</h2>
+        <p id="app-description"></p>
+        <p class="legal" id="app-platform"></p>
+      </section>
+      <section>
+        <h1>Legal Stuff</h1>
+        <p class="legal">
+          This software is supplied 'as is' and all use is at your own risk. Flow Simulation Ltd. provides no warranties of any kind,
+          express or implied, including any implied warranties as to fitness for a particular purpose, merchantability or non-infringement of
+          proprietary rights. Under no circumstances will Flow Simulation Ltd. be liable for any direct, indirect, incidental, consequential or
+          other damages arising from the use of this software.
+        </p>
+        <div id="app-copyright" class="copyright"></div>
+      </section>
+      <section>
+        <h1>Credits</h1>
+        <p>
+          Some content is sourced from <a href="widipedia.org">Wikipedia</a> and <a href="pixabay.com">pixabay</a> under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons licence</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

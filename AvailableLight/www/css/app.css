@@ -1,0 +1,98 @@
+﻿/* app-specific styles */
+
+@font-face {
+	font-family: "WeatherIcons";
+	src: url(../fonts/weathericons.ttf);
+}
+
+thead {
+	background-color: #c0c0c0;
+	color: rgb(255, 255, 255);
+	border: 1px solid grey;
+	font-weight: bold;
+}
+
+	thead td {
+		padding-right: 0.5em;
+	}
+
+		thead td:nth-child(3) {
+			min-width: 7em;
+		}
+
+.itemcontainer {
+	height: 100px;
+	margin: 2px;
+	overflow-y: hidden;
+}
+
+.itemcontainer-highlight {
+	height: 100px;
+	margin: 2px;
+	overflow-y: hidden;
+	background-color: grey;
+}
+
+.icon-block {
+	height: 100px;
+	width: 100px;
+	float: left;
+	margin-right: 10px;
+}
+
+.label-large {
+	font-size: 2em;
+	opacity: 1.0;
+	line-height: 30pt;
+}
+
+.label-medium {
+	font-size: 1em;
+	line-height: 16pt;
+	font-family: "Title";
+}
+
+.item-title {
+	margin-bottom: 1em;
+	width: 100%;
+}
+
+.light-data {
+	clear: both;
+}
+
+.search input {
+	width: 90%;
+	max-width: 50em;
+}
+
+.exposure-heading > img {
+	float: left;
+	margin-right: 1em;
+	margin-bottom: 1em;
+}
+
+.exposure-heading > div {
+	float: left;
+	margin-bottom: 1em;
+}
+
+	.exposure-heading > div > div {
+		max-width: 200px;
+	}
+
+		.exposure-heading > div > div:nth-child(1) {
+			font-weight: 600;
+		}
+
+		.exposure-heading > div > div:nth-child(2) {
+			font-weight: 600;
+		}
+
+.exposure-table {
+	clear: both;
+}
+
+.exposure-notes:first-letter {
+	text-transform: uppercase;
+}

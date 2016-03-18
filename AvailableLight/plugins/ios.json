@@ -1,0 +1,18 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.flosim.AvailableLight"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.flosim.AvailableLight"
+        }
+    },
+    "dependent_plugins": {}
+}

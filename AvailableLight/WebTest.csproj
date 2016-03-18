@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{C6B2EB03-A758-4DF4-81E9-4FAA9D56E498}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.7</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="index.html" />
+    <Content Include="web.config" />
+    <Content Include="www\css\index.css" />
+    <Content Include="www\css\ui-dark.css" />
+    <Content Include="www\images\aftersunset.jpg" />
+    <Content Include="www\images\brightsunlight.jpg" />
+    <Content Include="www\images\casino.jpg" />
+    <Content Include="www\images\fairground.jpg" />
+    <Content Include="www\images\fireworks.jpg" />
+    <Content Include="www\images\flashfill.JPG" />
+    <Content Include="www\images\floodlitbuildings.jpg" />
+    <Content Include="www\images\forest.jpg" />
+    <Content Include="www\images\heroImage_1080.jpg" />
+    <Content Include="www\images\kitchen.jpg" />
+    <Content Include="www\images\lightning.jpg" />
+    <Content Include="www\images\mercurylamp.jpg" />
+    <Content Include="www\images\moon.jpg" />
+    <Content Include="www\images\moonlight.jpg" />
+    <Content Include="www\images\moonlithorses.jpg" />
+    <Content Include="www\images\overcast.jpg" />
+    <Content Include="www\images\shadows.jpg" />
+    <Content Include="www\images\skyline.jpg" />
+    <Content Include="www\images\snow.jpg" />
+    <Content Include="www\images\snowscape.jpg" />
+    <Content Include="www\images\starlight.jpg" />
+    <Content Include="www\images\startrails.jpg" />
+    <Content Include="www\images\streetlight.jpg" />
+    <Content Include="www\images\sunbed.jpg" />
+    <Content Include="www\images\sunlight.jpg" />
+    <Content Include="www\images\sunset.jpg" />
+    <Content Include="www\images\twilight.jpg" />
+    <Content Include="www\images\typewriter.jpg" />
+    <Content Include="www\images\weaklight.jpg" />
+    <Content Include="www\index.html" />
+    <Content Include="www\pages\camera.html" />
+    <Content Include="www\pages\help.html" />
+    <Content Include="www\pages\home.html" />
+    <Content Include="www\pages\home.js" />
+    <Content Include="www\pages\search.html" />
+    <Content Include="www\pages\settings.html" />
+    <Content Include="www\pages\settings.js" />
+    <Content Include="www\controls\table.js" />
+    <Content Include="www\scripts\en-US\ui.strings.js" />
+    <Content Include="www\scripts\index.js" />
+    <Content Include="www\scripts\lib\JSXTransformer.js" />
+    <Content Include="www\scripts\lib\react.js" />
+    <Content Include="www\scripts\lib\Utils.js" />
+    <Content Include="www\scripts\lib\WindowsUI.js" />
+    <Content Include="www\scripts\model.js" />
+    <Content Include="www\scripts\platformOverrides.js" />
+    <Content Include="www\scripts\viewmodel.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <Content Include="www\fonts\Symbols.ttf" />
+    <Content Include="www\pages\home.jsx" />
+    <Content Include="www\pages\settings.jsx" />
+    <Content Include="www\controls\table.jsx" />
+    <Content Include="www\controls\ExposureHeading.jsx" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>WebTest</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>56871</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:56871/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

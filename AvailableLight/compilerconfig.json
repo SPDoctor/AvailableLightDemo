@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "www/scripts/controls/Search.js",
+    "inputFile": "www/scripts/controls/Search.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/Options.js",
+    "inputFile": "www/scripts/controls/Options.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/AppVersion.js",
+    "inputFile": "www/scripts/controls/AppVersion.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/Copyright.js",
+    "inputFile": "www/scripts/controls/Copyright.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/ExposureHeading.js",
+    "inputFile": "www/scripts/controls/ExposureHeading.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/LevelsList.js",
+    "inputFile": "www/scripts/controls/LevelsList.jsx"
+  },
+  {
+    "outputFile": "www/scripts/controls/ExposureTable.js",
+    "inputFile": "www/scripts/controls/ExposureTable.jsx"
+  }
+]
