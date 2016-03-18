@@ -1,13 +1,14 @@
 # AvailableLightDemo
 Demo project for AvailableLight JavaScript and CSS "framework" for building cross-platform mobile apps.
-The framework is intended a learning tool - it is a simple "vanilla.js" approach to building a cross-platform app.
-There is no dependency on SPA frameworks, databinding tools or even JQuery.
+The framework is intended as a learning tool - it is a simple "vanilla.js" approach to building a cross-platform app.
+There is no dependency on SPA frameworks, databinding tools or even JQuery (with the exception of the test code).
 
 All the rendering is done using native JavaScript techniques.
 Instead of databinding, content is re-rendered as properties are changed.
-One of the disadvantages of this is that it becomes increasingly complicated to 
+Of course we are not suggesting you should build a production application in this way;
+one of the disadvantages of this is that it becomes increasingly complicated to 
 keep track of what variables have changed and so on.
-If you were to use this as a starting point you would find at some point that the
+If you were to use this as a starting point you would find eventually that the
 code becomes difficult to manage.
 
 This is where a databinding framework can help.
@@ -15,7 +16,8 @@ Using a tool like Knockout.js you can use HTML markup and map elements to your v
 Another way to achieve the same effect is to use a view rendering tool like React.js.
 Instead of databinding, React.js renders the whole of your view every time something changes,
 but uses a Virtual DOM and applies changes selectively to the actual DOM making it
-very efficient.
+very efficient. 
+It also allows you to build self-contained components to build up your solution.
 
 Instead of using a SPA framework there are about 30 lines of code in availablelight.js that
 take care of hiding and showing "pages" as the user navigates.
@@ -24,8 +26,8 @@ There is a single HTML page with different sections which are made visible or
 invisible as the user navigates, giving the impression that they are moving
 between pages.
 
-In AvailableLight we use the HTML5 <article> element to represent each SPA page.
-We also use the <section> element to subdivide pages horizontally to give a
+In AvailableLight we use the HTML5 &lt;article&gt; element to represent each SPA page.
+We also use the &lt;section&gt; element to subdivide pages horizontally to give a
 semantic horizontal scroll to support small devices.
 On larger devices the horizontal pages are shown side-by-side.
 
