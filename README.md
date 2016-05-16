@@ -8,6 +8,9 @@ Instead of databinding, content is re-rendered as properties are changed.
 Of course we are not suggesting you should build a production application in this way;
 one of the disadvantages of this is that it becomes increasingly complicated to 
 keep track of what variables have changed and so on.
+In addition you have to deal with different browser implementations of the 
+DOM, which is much less of a problem than it was a few years ago, 
+but is still an issue, particularly when you accidentally stray outside the specification.
 If you were to use this as a starting point you would find eventually that the
 code becomes difficult to manage.
 
