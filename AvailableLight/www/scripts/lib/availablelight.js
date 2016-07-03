@@ -1,17 +1,23 @@
 ﻿// availablelight.js - a lightweight SPA framework for HTML5 hybrid applications
 var availablelight = availablelight || {};
 "use strict";
-availablelight.version = "1.0.8";
+availablelight.version = "1.0.9";
 availablelight.editMode = false;
 // default app info...
 availablelight.appInfo = {
   Name: 'Available Light Demo App',
   Description: '',
-  Version: '1.0.0',
+  Version: '1.0.9',
   Author: '',
   ID: 'com.flosim.AvailableLightDemoApp',
-  Copyright: 'Copyright \u00A9'
+  Copyright: 'Copyright \u00A9',
+  Email: ''
 };
+availablelight.themes = [
+  { value: "dark", text: "dark" },
+  { value: "light", text: "light" },
+  { value: "default", text: "default" }];
+availablelight.currentTheme = "default";
 
 // UI Initialization
 
@@ -24,20 +30,20 @@ availablelight.initialize = function (navCallback, appInfo) {
   availablelight.appInfo.Name = appInfo.Name || availablelight.appInfo.Name;
   availablelight.appInfo.Description = appInfo.Description || availablelight.appInfo.Description;
   availablelight.appInfo.Version = appInfo.Version || availablelight.appInfo.Version;
-  availablelight.appInfo.BuildDate = appInfo.BuildDate;
   availablelight.appInfo.Author = appInfo.Author || availablelight.appInfo.Author;
+  availablelight.appInfo.BuildDate = appInfo.BuildDate;
   availablelight.appInfo.ID = appInfo.ID || availablelight.appInfo.ID;
   availablelight.appInfo.Copyright = appInfo.Copyright || availablelight.appInfo.Copyright;
+  availablelight.appInfo.Email = appInfo.Email || availablelight.appInfo.Email;
   // bind static text fields
-  initialize(document.querySelector("body>header>h1"), availablelight.appInfo.Name);
+  initialize(document.querySelector("body>header>h1"), " < " + availablelight.appInfo.Name);
   initialize(document.getElementById("app-name"), availablelight.appInfo.Name);
   initialize(document.getElementById("app-version"), "Version " + availablelight.appInfo.Version);
-  var platform = "Running on " + availablelight.getPlatform() + " (";
-  if (availablelight.appInfo.BuildDate) platform += "built on " + availablelight.appInfo.BuildDate + ", ";
-  platform += "using Available Light framework version " + availablelight.version + ")";
-  initialize(document.getElementById("app-platform"), platform);
+  initialize(document.getElementById("app-platform"), availablelight.getPlatformDescription());
   initialize(document.getElementById("app-copyright"), availablelight.appInfo.Copyright);
   initialize(document.getElementById("app-description"), availablelight.appInfo.Description);
+  availablelight.createFeedbackLink(document.getElementById("app-feedback"));
+  availablelight.createRatingLink(document.getElementById("app-rating"));
 
   function onClick(event) {
     event = event || window.event // cross-browser event
@@ -48,9 +54,27 @@ availablelight.initialize = function (navCallback, appInfo) {
     event.preventDefault();
   }
 
+  function onBackButton(event) {
+    if (availablelight.navHistory.length <= 0) {
+      navigator.app.exitApp(); // exit the app
+      return;
+    }
+    availablelight.navigateBack();
+    event.preventDefault();
+  };
+
+  function onKeydown(event) {
+    if (availablelight.navHistory.length <= 0) return;
+    if (!event.altKey) return;
+    if (!(event.keyCode === 37)) return; // arrow left
+    availablelight.navigateBack();
+  };
+
   document.addEventListener('click', onClick.bind(this), false);
+  document.addEventListener('backbutton', onBackButton.bind(this), false);
+  document.addEventListener('keydown', onKeydown.bind(this), false);
   availablelight.navInitialize(navCallback);
-  availablelight.updateLiveTile();
+  //availablelight.updateLiveTile(); // need to make live tile configurable - uses Wide310x150Logo.scale-240.png etc. by default
   availablelight.handleWindowsSettingsPane();
 };
 
@@ -96,7 +120,10 @@ availablelight.navigate = function (articleURI, backNav) {
 
 availablelight.navigateBack = function () {
   var from = availablelight.navHistory.pop();
-  if (availablelight.navHistory.length <= 0) return; // exit the app, perhaps after confirmation dialog
+  if (availablelight.navHistory.length <= 0) { // at top of stack
+    availablelight.navigate("home", true);
+    return;
+  }
   to = availablelight.navHistory[availablelight.navHistory.length - 1];
   if (availablelight.navCallback) availablelight.navCallback(from, to);
   availablelight.navigate(to, true);
@@ -166,38 +193,69 @@ availablelight.swipeDetect = function (element, callback) {
 };
 
 // Rate My App - call availablelight.RateMyApp.promptForRatingAfter(5) to prompt on fifth call
-availablelight.RateMyApp = (function () {
+availablelight.RateMyApp = (function (appStoreID) {
   var COUNTER_LOCAL_STORAGE_ID = availablelight.appInfo.ID + '.rmacounter';
   var counter = JSON.parse(localStorage.getItem(COUNTER_LOCAL_STORAGE_ID)) || 0;
 
-  function navigateToAppStore() {
+  function getAppStoreID() {
+    if (!window.cordova || !window.cordova.platformId) return null;
+    switch (cordova.platformId.toLowerCase()) {
+      case "ios":
+      case "android":
+        return availablelight.appInfo.ID;
+      case "windows":
+        if (navigator && navigator.userAgent.indexOf("Windows Phone") !== -1) { // Windows Phone
+          try {
+            return window.Windows.ApplicationModel.Store.CurrentApp.appId;
+          } catch (e) {
+            return null;
+          }
+        } else { // windows 
+          //if (!window.Windows || !Windows.ApplicationModel || !Windows.ApplicationModel.Package || !Windows.ApplicationModel.Package.current) return null;
+          //return Windows.ApplicationModel.Package.current.id; // Windows 8???
+          try {
+            return window.Windows.ApplicationModel.Store.CurrentApp.appId;
+          } catch (e) {
+            return null;
+          }
+        }
+      default: return null;
+    }
+  }
+
+  var navigateToAppStore = function () {
+    var appStoreID = getAppStoreID();
+    if (!appStoreID) {
+      console.log("RMA requires an App Store ID");
+      var title = "Rate " + availablelight.appInfo.Name;
+      if (navigator.notification)
+        navigator.notification.confirm("Sorry, can't find app in the store.", function() {}, title, ["OK"]);
+      return;
+    }
+
     switch (cordova.platformId.toLowerCase()) {
       case "android":
-        window.open('market://details?id=' + availablelight.appInfo.ID, '_system');
+        window.open('market://details?id=' + appStoreID, '_system');
         break;
       case "ios":
         // needs testing
         var iOSVersion = navigator.userAgent.match(/OS\s+([\d\_]+)/i)[0].replace(/_/g, '.').replace('OS ', '').split('.');
         iOSVersion = parseInt(iOSVersion[0]) + (parseInt(iOSVersion[1]) || 0) / 10;
         if ((7.1 > iOSVersion && iOSVersion >= 7.0)) {
-          window.open("itms-apps://itunes.apple.com/app/id" + availablelight.appInfo.ID, '_system');
+          window.open("itms-apps://itunes.apple.com/app/id" + appStoreID, '_system');
         } else {
-          window.open("itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + availablelight.AppInfo().ID, '_system');
+          window.open("itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + appStoreID, '_system');
         }
         break;
       case "windows":
-        if (navigator.userAgent.indexOf("Windows Phone") !== -1) { // Windows Phone
-          window.open('ms-windows-store:reviewapp?appid=' + Windows.ApplicationModel.Store.CurrentApp.appId, '_system');
+        if (navigator && navigator.userAgent.indexOf("Windows Phone") !== -1) { // Windows Phone
+          window.open('ms-windows-store:reviewapp?appid=' + appStoreID, '_system');
         } else { // windows 
-          window.open('ms-windows-store:review?PFN:' + Windows.ApplicationModel.Package.current.id, '_system');
+          window.open('ms-windows-store:review?PFN:' + appStoreID, '_system');
         }
         break;
       default: break;
     }
-  };
-
-  function buttonClickHandler(buttonIndex) {
-    if (buttonIndex === 2) navigateToAppStore();
   };
 
   var resetCounter = function (count) {
@@ -212,18 +270,22 @@ availablelight.RateMyApp = (function () {
       localStorage.setItem(COUNTER_LOCAL_STORAGE_ID, JSON.stringify(counter));
     }
     if (counter === count) {
+      if (!getAppStoreID()) { console.log("RMA requires an App Store ID"); return; };
+      if (!navigator.notification) { console.log("RMA requires native dialog plug-in 'cordova-plugin-dialogs'"); return; }
       var title = "Rate " + availablelight.appInfo.Name;
       var message = "If you enjoy using " + availablelight.appInfo.Name + ", would you mind taking a moment to give us a 5 star rating? It helps us a lot and won’t take more than a minute. Thanks for your support :-)";
       var cancelButtonLabel = "No Thanks";
       var rateButtonLabel = "Rate It Now";
-      if (!navigator.notification) console.log("RMA requires native dialog plug-in 'cordova-plugin-dialogs'")
-      else navigator.notification.confirm(message, buttonClickHandler, title, [cancelButtonLabel, rateButtonLabel]);
+      navigator.notification.confirm(message, function (buttonIndex) {
+        if (buttonIndex === 2) navigateToAppStore();
+      }, title, [cancelButtonLabel, rateButtonLabel]);
     }
   };
 
   return {
     resetCounter: resetCounter,
-    promptForRatingAfter: promptForRatingAfter
+    promptForRatingAfter: promptForRatingAfter,
+    navigateToAppStore: navigateToAppStore
   };
 })();
 
@@ -252,10 +314,19 @@ availablelight.getPlatform = function () {
   return platform;
 };
 
+availablelight.getPlatformDescription = function () {
+  var platform = "Running on " + availablelight.getPlatform() + " (";
+  if (window.device) // add device info if device plug-in is installed...
+    html += device.model + " " + device.version + " " + device.platform + ".";
+  if (navigator.appVersion) platform += navigator.appVersion.replace("AppleWebKit/", "").replace(" like Gecko", "").replace("Safari/", "").replace("Chrome/", "");
+  if (availablelight.appInfo.BuildDate) platform += ", built on " + availablelight.appInfo.BuildDate;
+  platform += ", using Available Light framework version " + availablelight.version + ").";
+  return platform;
+};
+
 availablelight.isTouchEnabled = function () {
   return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
-}
-
+};
 
 // Persistence
 
@@ -276,7 +347,7 @@ availablelight.PersistenceHelper = function (model, name, deflt, action, isStrin
         model[name] = deflt;
       }
       break;
-    default:;
+    default: ;
   }
 };
 
@@ -350,9 +421,9 @@ availablelight.updateLiveTile = function () {
     var template = notifications.TileTemplateType.tileWide310x150ImageAndText01;
     var tileXml = notifications.TileUpdateManager.getTemplateContent(template);
     var tileTextAttributes = tileXml.getElementsByTagName("text");
-    tileTextAttributes[0].appendChild(tileXml.createTextNode("Pushing the limits of photography"));
+    tileTextAttributes[0].appendChild(tileXml.createTextNode(availablelight.appInfo.Description));
     var tileImageAttributes = tileXml.getElementsByTagName("image");
-    tileImageAttributes[0].setAttribute("src", "ms-appx:///www/images/aftersunset.jpg");
+    tileImageAttributes[0].setAttribute("src", "ms-appx:///res/icons/windows/Wide310x150Logo.scale-240.png");
     tileImageAttributes[0].setAttribute("alt", "red graphic");
     var tileNotification = new notifications.TileNotification(tileXml);
     var updater = notifications.TileUpdateManager.createTileUpdaterForApplication();
@@ -360,6 +431,33 @@ availablelight.updateLiveTile = function () {
   }
   catch (e) { // fail silently
   }
+}
+
+availablelight.createFeedbackLink = function (element) {
+  if (!element) return;
+  if (!availablelight.appInfo.Email || availablelight.appInfo.Email.length === 0) return;
+  var html = "<a href=\"mailto:" + availablelight.appInfo.Email + "?";
+  html += "subject=" + availablelight.appInfo.Name + " Customer Feedback&";
+  html += "body=[please insert your message here]%0D%0A%0D%0A";
+  html += "Sent using " + availablelight.appInfo.Name;
+  html += " version " + availablelight.appInfo.Version;
+  function stringEndsWith(str, suffix) { return str.substr(str.length - suffix.length) === suffix; }
+  html += " by " + availablelight.appInfo.Author + (stringEndsWith(availablelight.appInfo.Author, ".") ? "" : ".");
+  html += " " + availablelight.getPlatformDescription();
+  html += "\" target=\"_blank\">";
+  if (element.innerHTML.length > 0) html += element.innerHTML;
+  else html += "Give us Feedback/Suggestions";
+  html += "</a>";
+  element.innerHTML = html;
+};
+
+availablelight.createRatingLink = function (element) {
+  if (!element) return;
+  function onClick() {
+    availablelight.RateMyApp.navigateToAppStore();
+    event.preventDefault();
+  }
+  element.addEventListener('click', onClick.bind(this), false);;
 }
 
 availablelight.hex = function (n) {
@@ -530,30 +628,67 @@ availablelight.isDarkTheme = function () {
 availablelight.initializeTheme = function () {
   // apply theme colours
   //var controlMidColour = availablelight.subduedColor(availablelight.fromHex(availablelight.getControlForegroundColour()), {r:127,g:127,b:127});
-  var style = document.createElement('style');
-  style.type = 'text/css';
+  var style = document.getElementById('availablelight-current-theme');
+  if (!style) {
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.id = 'availablelight-current-theme';
+  }
   style.innerHTML = '.theme-accent-colour { color: ' + availablelight.getAccentColour() + '; }\n' +
-		'.theme-foreground-colour { color: ' + availablelight.getForegroundColour() + '; }\n' +
-		'.theme-background-colour { background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
-		'.theme-controlforeground-colour { color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'.theme-controlbackground-colour { background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
-		'body { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
-		'body>nav, body>nav>button { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
-		'button, input, select { color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'body>header { color: ' + availablelight.getHeaderForegroundColour() + '; background-color: ' + availablelight.getHeaderBackgroundColour() + '; }\n' +
-		'button { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; border-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'button:hover, button:active { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
-		'input, select { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; border-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'input:hover, input:active, select:hover, select:active { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
-		'select option:checked { color: ' + availablelight.getControlBackgroundColour() + '; background-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'';
+    '.theme-foreground-colour { color: ' + availablelight.getForegroundColour() + '; }\n' +
+    '.theme-background-colour { background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
+    '.theme-controlforeground-colour { color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    '.theme-controlbackground-colour { background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
+    'body { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
+    'body nav, body nav button { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
+    'button, input, select { color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    'body header { color: ' + availablelight.getHeaderForegroundColour() + '; background-color: ' + availablelight.getHeaderBackgroundColour() + '; }\n' +
+    'button { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; border-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    'button:hover, button:active { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; }\n' +
+    'input, select { color: ' + availablelight.getForegroundColour() + '; background-color: ' + availablelight.getBackgroundColour() + '; border-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    'input:hover, input:active, select:hover, select:active { color: ' + availablelight.getControlForegroundColour() + '; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
+    'select option:checked { color: ' + availablelight.getControlBackgroundColour() + '; background-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    '';
   if (!availablelight.isTouchEnabled()) style.innerHTML +=
-		'body { scrollbar-highlight-color: ' + availablelight.getControlBackgroundColour() + '; scrollbar-base-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'::-webkit-scrollbar { -webkit-overflow-scrolling: touch; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
-		'::-webkit-scrollbar-thumb { background-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
-		'';
+    'body { scrollbar-highlight-color: ' + availablelight.getControlBackgroundColour() + '; scrollbar-base-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    '::-webkit-scrollbar { -webkit-overflow-scrolling: touch; background-color: ' + availablelight.getControlBackgroundColour() + '; }\n' +
+    '::-webkit-scrollbar-thumb { background-color: ' + availablelight.getControlForegroundColour() + '; }\n' +
+    '';
   document.head.appendChild(style);
 }
+
+availablelight.setTheme = function (theme) {
+  // will probably make this part of available light - should not have anything to do with viewmodel
+  switch (theme) {
+    case "dark": {
+      availablelight.setBackgroundColour("#000000");
+      availablelight.setForegroundColour("#FFFFFF");
+      availablelight.setHeaderBackgroundColour("#000000");
+      availablelight.setHeaderForegroundColour("#FFFFFF");
+      break;
+    }
+    case "light": {
+      availablelight.setBackgroundColour("#FFFFFF");
+      availablelight.setForegroundColour("#000000");
+      availablelight.setHeaderBackgroundColour("#FFFFFF");
+      availablelight.setHeaderForegroundColour("#000000");
+      break;
+    }
+    default: {
+      availablelight.setAllColours("host");
+    }
+  }
+  availablelight.initializeTheme();
+};
+
+availablelight.loadTheme = function () {
+  availablelight.PersistenceHelper(availablelight, "currentTheme", "default", "load", true);
+  availablelight.setTheme(availablelight.currentTheme);
+};
+
+availablelight.saveTheme = function () {
+  availablelight.PersistenceHelper(availablelight, "currentTheme", "default", "save", true);
+};
 
 availablelight.handleWindowsSettingsPane = function () {
   if (typeof Windows != 'undefined') { // feature detection - Windows platforms only
